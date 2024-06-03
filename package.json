@@ -1,0 +1,45 @@
+{
+  "name": "montemplate",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "vite --port 8080",
+    "build": "vite build",
+    "preview": "vite preview",
+    "extract": "formatjs extract"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^2.8.8",
+    "@reduxjs/toolkit": "^1.8.1",
+    "@tailwindcss/forms": "^0.4.0",
+    "axios": "^0.27.2",
+    "buffer": "^6.0.3",
+    "chart.js": "^3.5.0",
+    "chartjs-adapter-moment": "^1.0.0",
+    "moment": "^2.29.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-flatpickr": "^3.10.7",
+    "react-hook-form": "^7.31.1",
+    "react-icons": "^5.2.1",
+    "react-intl": "^5.25.1",
+    "react-number-format": "^5.4.0",
+    "react-redux": "^8.0.1",
+    "react-router-dom": "^6.2.1",
+    "react-select": "^5.8.0",
+    "react-toastify": "^9.1.1",
+    "react-transition-group": "^4.4.1",
+    "resource-axios": "^1.2.5",
+    "socket.io-client": "^4.7.5",
+    "yup": "^0.32.11"
+  },
+  "devDependencies": {
+    "@formatjs/cli": "^4.8.4",
+    "@vitejs/plugin-react": "^1.0.7",
+    "autoprefixer": "^10.4.2",
+    "babel-plugin-formatjs": "^10.3.20",
+    "postcss": "^8.4.5",
+    "sass": "^1.49.0",
+    "tailwindcss": "^3.0.18",
+    "vite": "^2.7.2"
+  }
+}
