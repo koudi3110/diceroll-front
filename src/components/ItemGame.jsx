@@ -2,13 +2,10 @@ import React, { useState } from "react";
 import avatar from "/images/avatar.png";
 import { useEffect } from "react";
 import { FaDice, FaGamepad, FaUser } from "react-icons/fa";
-import {
-  RiGroup2Fill,
-  RiTimerLine,
-} from "react-icons/ri";
+import { RiGroup2Fill, RiTimerLine } from "react-icons/ri";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { getGameStatus, problemGame } from "../slices/game";
+import { getGameStatus } from "../slices/game";
 import { showError, showSucces } from "./Toasts";
 import Loading from "./Loading";
 import ModalJoin from "../pages/modals/ModalJoin";
@@ -42,8 +39,6 @@ const ItemGame = ({ item }) => {
       })
       .catch(() => showError(e));
   };
-
-
 
   return (
     <>

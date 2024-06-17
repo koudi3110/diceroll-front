@@ -28,8 +28,32 @@ export const login = createAsyncThunk(
   "auth/login",
   async ({ username }, thunkAPI) => {
     try {
-      const data = await AuthService.login(username);
-      console.log(data);
+      const response = await AuthService.login(username);
+      if (!response.is_exist) {
+        thunkAPI.dispatch(replaceIsLoggedIn(true));
+        thunkAPI.dispatch(replaceCurrentUser(response.data));
+        localStorage.setItem("user", JSON.stringify(response.data));
+      }
+      return response;
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      thunkAPI.dispatch(setMessage(message));
+      return thunkAPI.rejectWithValue();
+    }
+  }
+);
+
+export const visitor = createAsyncThunk(
+  "auth/visitor",
+  async (data, thunkAPI) => {
+    try {
+      const data = await AuthService.visitor();
+      thunkAPI.dispatch(replaceIsLoggedIn(true));
       return thunkAPI.dispatch(replaceCurrentUser(data));
     } catch (error) {
       const message =
@@ -43,6 +67,7 @@ export const login = createAsyncThunk(
     }
   }
 );
+
 export const logout = createAsyncThunk(
   "auth/logout",
   async (data, thunkAPI) => {
@@ -67,26 +92,26 @@ export const logout = createAsyncThunk(
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  extraReducers: {
-    [register.fulfilled]: (state, action) => {
-      state.isLoggedIn = false;
-    },
-    [register.rejected]: (state, action) => {
-      state.isLoggedIn = false;
-    },
-    [login.fulfilled]: (state, action) => {
-      state.isLoggedIn = true;
-      state.user = action.payload.user;
-    },
-    [login.rejected]: (state, action) => {
-      state.isLoggedIn = false;
-      state.user = null;
-    },
-    [logout.fulfilled]: (state, action) => {
-      state.isLoggedIn = false;
-      state.user = null;
-    },
-  },
+  // extraReducers: {
+  //   [register.fulfilled]: (state, action) => {
+  //     state.isLoggedIn = false;
+  //   },
+  //   [register.rejected]: (state, action) => {
+  //     state.isLoggedIn = false;
+  //   },
+  //   [login.fulfilled]: (state, action) => {
+  //     state.isLoggedIn = true;
+  //     state.user = action.payload.user;
+  //   },
+  //   [login.rejected]: (state, action) => {
+  //     state.isLoggedIn = false;
+  //     state.user = null;
+  //   },
+  //   [logout.fulfilled]: (state, action) => {
+  //     state.isLoggedIn = false;
+  //     state.user = null;
+  //   },
+  // },
 
   reducers: {
     replaceCurrentUser(state, action) {

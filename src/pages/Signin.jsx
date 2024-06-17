@@ -4,10 +4,12 @@ import AuthImage from "/images/background.jpg";
 import Logo from "/images/logo.png";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
-import { login } from "../slices/auth";
+import { login, replaceCurrentUser, visitor } from "../slices/auth";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import TextInput from "../components/TextInput";
+import ModalAlert from "./modals/ModalAlert";
+import moment from "moment/moment";
 
 function Signin() {
   const validationSchema = Yup.object().shape({
@@ -16,6 +18,9 @@ function Signin() {
 
   const { isLoggedIn } = useSelector((state) => state.auth);
   const [username, setUsername] = useState("");
+  const [showIsexist, setShowIsExist] = useState(false);
+  const [message, setMessage] = useState("");
+  const [me, setMe] = useState();
 
   const {
     register,
@@ -31,13 +36,38 @@ function Signin() {
 
   const dispatch = useDispatch();
 
+  const itsMe = () => {
+    dispatch(replaceCurrentUser(me));
+    localStorage.setItem("user", JSON.stringify(me));
+    navigate("/home");
+  };
+
   const onFormSubmit = (data) => {
     dispatch(login(data))
       .unwrap()
+      .then((data) => {
+        console.log(data.is_exist);
+        if (data.is_exist) {
+          setMe(data.data);
+          const msg = `${data?.data?.username} c'est connecté le ${moment(
+            data?.data
+          ).format("DD/MM/YYYY")}. Est ce bien vous ?`;
+          setShowIsExist(true);
+          setMessage(msg);
+        } else {
+          dispatch(replaceCurrentUser(data.data));
+          localStorage.setItem("user", JSON.stringify(data.data));
+          navigate("/home");
+        }
+      })
+      .catch(() => {});
+  };
+
+  const start_visitor = () => {
+    dispatch(visitor())
+      .unwrap()
       .then(() => {
-        console.log("success");
         navigate("/home");
-        // window.location.reload();
       })
       .catch(() => {});
   };
@@ -47,8 +77,16 @@ function Signin() {
   if (isLoggedIn) {
     return <Navigate to="/" />;
   }
+
   return (
     <main className="bg-white">
+      <ModalAlert
+        open={showIsexist}
+        setOpen={setShowIsExist}
+        message={message}
+        action={() => itsMe()}
+      />
+
       <div className="relative md:flex">
         {/* Image */}
         <div className="hidden md:block md:w-1/2" aria-hidden="true">
@@ -79,7 +117,7 @@ function Signin() {
               <div className="flex flex-col items-center">
                 <img className="h-48" src={Logo} alt="" />
                 <h1 className="text-3xl text-slate-800 font-bold mb-6">
-                  Connecion
+                  Connexion
                 </h1>
               </div>
               {/* Form */}
@@ -94,7 +132,7 @@ function Signin() {
                             : "focus:border-l-4 focus:border-indigo-500"
                         }`}
                       name={"username"}
-                      placeholder={"N'om d'utilisateur"}
+                      placeholder={"Nom d'utilisateur"}
                       onChange={(e) => {
                         setValue("username", e);
                         setUsername(e);
@@ -106,28 +144,6 @@ function Signin() {
                       {errors.pseudo?.message}
                     </span>
                   </div>
-                  {/* <div>
-                    <TextInput
-                      className={`form-input w-full focus:border-primary-500 box-border focus:font-semibold
-                        font-semibold py-2 px-5 mb-2 border-1 ${
-                          errors.password
-                            ? "border-l-4 border-r-1 border-y-1 border-red-500"
-                            : "focus:border-l-4 focus:border-indigo-500"
-                        }`}
-                      name={"password"}
-                      placeholder={translate.password}
-                      onChange={(e) => {
-                        setValue("password", e);
-                        setPassword(e);
-                      }}
-                      register={{ ...register("password") }}
-                      inputType="password"
-                      value={password}
-                    />
-                    <span className="flex items-center font-medium tracking-wide text-red-500 text-xs mt-1 ml-1">
-                      {errors.password?.message}
-                    </span>
-                  </div> */}
                 </div>
                 <div className="mt-6">
                   <button
@@ -143,12 +159,13 @@ function Signin() {
               <div className="pt-5 mt-6 border-t border-slate-200">
                 <div className="text-sm">
                   Cotinuer en tant que:{" "}
-                  <Link
+                  <button
+                    href="#"
                     className="font-medium text-primary-500 hover:text-primary-600"
-                    to="/signup"
+                    onClick={() => start_visitor()}
                   >
                     visiter
-                  </Link>
+                  </button>
                 </div>
               </div>
             </div>

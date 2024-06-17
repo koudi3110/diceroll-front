@@ -62,47 +62,11 @@ export const getScores = createAsyncThunk(
   }
 );
 
-export const gameStatus = createAsyncThunk(
-  "game/gameStatus",
+export const sessionStatus = createAsyncThunk(
+  "game/sessionStatus",
   async (id, thunkAPI) => {
     try {
-      const response = await gameService.gameStatus(id);
-      return response;
-    } catch (error) {
-      const message =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
-      throw message;
-    }
-  }
-);
-
-export const getAccountTransaction = createAsyncThunk(
-  "game/getAccountTransaction",
-  async (data, thunkAPI) => {
-    try {
-      const response = await gameService.getAccountTransaction(data);
-      return response;
-    } catch (error) {
-      const message =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
-      throw message;
-    }
-  }
-);
-
-export const problemGame = createAsyncThunk(
-  "game/problemGame",
-  async (data, thunkAPI) => {
-    try {
-      const response = await gameService.problemGame(data);
+      const response = await gameService.sessionStatus(id);
       return response;
     } catch (error) {
       const message =

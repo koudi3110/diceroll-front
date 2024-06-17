@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 
-
 function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const location = useLocation();
   const { pathname } = location;
@@ -183,7 +182,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                         />
                       </svg>
                       <span className="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
-                        Dashboard
+                        Accueil
                       </span>
                     </div>
                   </div>
@@ -288,7 +287,7 @@ function Sidebar({ sidebarOpen, setSidebarOpen }) {
                     </svg>
 
                     <span className="text-sm font-medium ml-3 lg:opacity-0 lg:sidebar-expanded:opacity-100 2xl:opacity-100 duration-200">
-                      Inbox
+                      Configuration
                     </span>
                   </div>
                 </NavLink>

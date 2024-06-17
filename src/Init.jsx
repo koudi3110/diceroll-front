@@ -68,7 +68,7 @@ const Init = ({ children }) => {
       // });
 
       socket?.on("session:list", (data) => {
-        console.log(data);
+        // console.log(data);
 
         const waitingSession = data?.filter((e) => e?.status == "init");
         const encoursSessin = data?.filter((e) => e?.status == "pending");

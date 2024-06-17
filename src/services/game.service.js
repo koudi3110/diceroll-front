@@ -58,10 +58,7 @@ const deleteGame = async (id) => {
 
 const initGame = async (id) => {
   try {
-    const start = performance.now();
-    const response = await api.get(`parties/init/${id}`);
-    const end = performance.now();
-    // console.log(`initGame`, start - end);
+    const response = await api.get(`dice/init/${id}`);
     return response.data;
   } catch (error) {
     const message =
@@ -75,10 +72,7 @@ const initGame = async (id) => {
 };
 
 const getScores = async () => {
-  const start = performance.now();
   return api.get(`scores/get-latest-scores`).then((response) => {
-    const end = performance.now();
-    // console.log(`getScores`, start - end);
     return response.data;
   });
 };
@@ -92,26 +86,14 @@ const getHistory = ({ account, number }) => {
   });
 };
 
-const gameStatus = async (id) => {
-  return api.get(`parties/status/${id}`).then((response) => {
+const sessionStatus = async (id) => {
+  return api.get(`dice/status/${id}`).then((response) => {
     return response.data;
   });
 };
 
-const getAccountTransaction = async ({ account, party }) => {
-  return api.get(`finances/${account}/${party}`).then((response) => {
-    return response.data;
-  });
-};
-
-const problemGame = async (data) => {
-  return api.post(`parties/problem`, data).then((response) => {
-    return response.data;
-  });
-};
-
-const stoppedBall = async (id, data) => {
-  return api.post(`parties/stopped-ball/${id}`, data).then((response) => {
+const launch = async ({ id, data }) => {
+  return api.post(`dice/roll/${id}`, data).then((response) => {
     return response.data;
   });
 };
@@ -124,8 +106,6 @@ export default {
   createGame,
   getHistory,
   getScores,
-  gameStatus,
-  getAccountTransaction,
-  problemGame,
-  stoppedBall,
+  sessionStatus,
+  launch,
 };

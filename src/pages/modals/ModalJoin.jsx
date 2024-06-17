@@ -51,24 +51,16 @@ const ModalJoin = ({ open, setOpen, game }) => {
 
     socket?.on(`session:init:${game?._id}`, (data) => {
       setOpen(false);
-      const myData = decryptAndDecompressData(data?.data);
+      console.log("======>", data);
 
-      console.log("======>", myData);
-
-      const find = myData?.initPlayerAndCard?.find(
-        (e) => e?.player?.pseudo == currentUser?.pseudo
-      );
-      const find2 = myData?.spectator?.find(
-        (e) => e.pseudo == currentUser?.pseudo
+      const find = data?.players?.find(
+        (e) => e?.player?._id == currentUser?._id
       );
 
-      console.log("find", myData?.spectator);
-      // game?.creator?.pseudo == currentUser?.pseudo
-      if (find || find2) {
-        navigate("/game", { state: { data: myData }, replace: true });
+      console.log(find);
+      if (find) {
+        navigate("/game", { state: { data }, replace: true });
       }
-
-      // if (fin2) navigate("/game", { state: { data: data2?.data } });
     });
 
     socket?.on(`session:remove:${game?._id}:${currentUser?.pseudo}`, (data) => {
@@ -196,14 +188,14 @@ const ModalJoin = ({ open, setOpen, game }) => {
             <div className="flex items-center font-bold space-x-2">
               <FaGamepad className="text-2xl" />
               <span>
-                <NumberForm value={game?.nb_parties} suffix={"FCFA"} />
+                <NumberForm value={game?.nb_parties} />
               </span>
             </div>
 
             <div className="flex items-center font-bold space-x-2">
               <FaDice className="text-2xl" />
               <span>
-                <NumberForm value={game?.nb_dices} suffix={"FCFA"} />
+                <NumberForm value={game?.nb_dices} />
               </span>
             </div>
 

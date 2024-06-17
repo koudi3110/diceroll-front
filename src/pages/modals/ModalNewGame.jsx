@@ -15,13 +15,19 @@ import { MdGamepad, MdOutlineTimer } from "react-icons/md";
 
 const ModalNewGame = ({ open, setOpen, setGame, setJoinOpen }) => {
   const validationSchema = Yup.object().shape({
-    nb_parties: Yup.number().required("Nombre de partie requis"),
+    nb_parties: Yup.number()
+      .required("Nombre de partie requis")
+      .min(1, "min 1")
+      .max(10, "max 10"),
     nb_players: Yup.object().required("Nombre de joeurs requis"),
     timer: Yup.number()
       .min(20, "min 20s")
       .max(60, "max 60s")
       .required("temps coup requis"),
-    nb_dices: Yup.number().required("Nombre de dé requis"),
+    nb_dices: Yup.number()
+      .required("Nombre de dé requis")
+      .min(1, "min 1")
+      .max(10, "max 10"),
   });
 
   const { currentUser } = useSelector((state) => state.auth);

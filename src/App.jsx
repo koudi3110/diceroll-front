@@ -9,6 +9,8 @@ import "./charts/ChartjsConfig";
 import Dashboard from "./pages/Dashboard";
 
 import Signin from "./pages/Signin";
+import Game from "./pages/Game";
+import Score from "./pages/Score";
 
 function App() {
   const location = useLocation();
@@ -22,8 +24,10 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/signin" element={<Signin />} />
         <Route exact path="/" element={<Dashboard />} />
+        <Route path="/signin" element={<Signin />} />
+        <Route exact path="/game" element={<Game />} />
+        <Route path="/scores" element={<Score />} />
 
         <Route path="*" element={<Dashboard />} />
       </Routes>
