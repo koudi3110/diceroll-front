@@ -2,14 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 import { MdAddCircle, MdRefresh } from "react-icons/md";
-import { FaMoneyBill } from "react-icons/fa";
 import sourire from "/images/win.png";
 import triste from "/images/lose.png";
 import { getHistory } from "../slices/game";
 import ModalRecapGame from "./modals/ModalRecapGame";
 import { showError } from "../components/Toasts";
 import Loading from "../components/Loading";
-import NumberForm from "../components/NumberForm";
 import format_date from "../utils/format_date";
 import Header from "../partials/Header";
 import Sidebar from "../partials/Sidebar";
@@ -17,30 +15,82 @@ import Sidebar from "../partials/Sidebar";
 const ItemsHistory = ({ e, i, value }) => {
   const [open, setOpen] = useState(false);
   const { currentUser } = useSelector((state) => state.auth);
+  const [score, setScore] = useState();
+  const [classement, setClassement] = useState(
+    e.players?.map((e) => ({
+      username: e.player.username,
+      value: 0,
+    }))
+  );
+
+  const getScore = () => {
+    const towers = e?.towers || [];
+    let sc = 0;
+
+    for (let tower of towers) {
+      for (let key in tower) {
+        if (currentUser?.username == key) {
+          tower[key].forEach((e) => {
+            sc += e;
+          });
+        }
+      }
+    }
+    setScore(sc);
+  };
+
+  const getClassement = () => {
+    const towers = e?.towers || [];
+    const change = e?.players?.map((e) => ({
+      username: e.player.username,
+      value: 0,
+    }));
+
+    for (let tower of towers) {
+      for (let key in tower) {
+        for (let change1 of change) {
+          if (change1.username == key) {
+            tower[key].forEach((e) => {
+              change1.value += e;
+            });
+          }
+        }
+      }
+    }
+
+    setClassement([...change]);
+  };
+
+  useEffect(() => {
+    getScore();
+    getClassement();
+  }, [currentUser]);
+
   return (
     <>
-      <ModalRecapGame open={open} setOpen={setOpen} entry={e} />
+      <ModalRecapGame
+        open={open}
+        setOpen={setOpen}
+        game={e}
+        classement={classement}
+      />
       <a
         className={`flex py-1  space-x-1  md:text-base text-xs items-center ${
           i < value?.length - 1 && "border-b border-b-slate-100"
         }`}
         href="#"
         onClick={(event) => {
-          console.log("test");
           event.stopPropagation();
-          if (e?.type == "partie") setOpen(true);
+          setOpen(true);
         }}
       >
         <div className="w-[7%]">
-          {e?.type == "partie" &&
-            (e?.party?.winner?.pseudo == currentUser?.pseudo ||
-            e?.party?.winner?._id == currentUser?._id ? (
-              <img src={sourire} alt="" className="h-5 w-5 lg:w-8 lg:h-8" />
-            ) : (
-              <img src={triste} alt="" className="h-5 w-5 lg:w-8 lg:h-8" />
-            ))}
-
-          {e?.type != "partie" && <FaMoneyBill className="text-2xl" />}
+          {e?.winner?.username == currentUser?.username ||
+          e?.winner?._id == currentUser?._id ? (
+            <img src={sourire} alt="" className="h-5 w-5 lg:w-8 lg:h-8" />
+          ) : (
+            <img src={triste} alt="" className="h-5 w-5 lg:w-8 lg:h-8" />
+          )}
         </div>
         <div className="w-[17%]">
           {format_date(
@@ -50,45 +100,18 @@ const ItemsHistory = ({ e, i, value }) => {
           )}
         </div>
         <div className="w-[48%]">
-          {"translate.balance_before"}:{" "}
-          <span className="font-bold">
-            <NumberForm value={e?.amount} />
-          </span>
+          Score: <span className="font-bold">{score}</span>
         </div>
         <div className="w[28%]">
-          {e?.type == "partie" &&
-            (e?.party?.winner?.pseudo == currentUser?.pseudo ||
-            e?.party?.winner?._id == currentUser?._id ? (
-              <span className="text-green-500">
-                {"translate.won"}:{" "}
-                <span className="font-bold">
-                  <NumberForm value={e?.credit} />
-                </span>
-              </span>
+          Status:{" "}
+          <span className="">
+            {e?.winner?.username == currentUser?.username ||
+            e?.winner?._id == currentUser?._id ? (
+              <span className="font-bold text-green-500">gagné</span>
             ) : (
-              <span className="text-red-500">
-                {"translate.lost"}:{" "}
-                <span className="font-bold">
-                  <NumberForm value={e?.debit} />
-                </span>
-              </span>
-            ))}
-          {e?.type == "retrait" && (
-            <span className="text-primary-500">
-              {"translate.withdrawal"}:{" "}
-              <span className="font-bold">
-                <NumberForm value={e?.debit} />
-              </span>
-            </span>
-          )}
-          {e?.type == "recharge" && (
-            <span className="text-green-500">
-              recharge:{" "}
-              <span className="font-bold">
-                <NumberForm value={e?.credit} />
-              </span>
-            </span>
-          )}
+              <span className="font-bold text-red-500">perdu</span>
+            )}
+          </span>
         </div>
       </a>
     </>
@@ -150,9 +173,9 @@ const Score = () => {
   }, []);
 
   useEffect(() => {
-    let group1 = groupBy(history?.entries || [], "createdAt");
+    let group1 = groupBy(history.datas || [], "createdAt");
     setGroup(group1);
-  }, [history?.entries]);
+  }, [history.datas]);
 
   if (!localStorage.getItem("user")) {
     return <Navigate to="/signin" />;
@@ -174,12 +197,9 @@ const Score = () => {
         </button>
       </div>
       <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
-        <Header
-          sidebarOpen={sidebarOpen}
-          setSidebarOpen={setSidebarOpen}
-        />
+        <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
-        <main className="h-full relative md:px-10 px-1 pt-16 md:pt-0">
+        <main className="h-full relative md:px-10 px-1">
           <div className="space-y-5 mt-3">
             {Object.entries(group)?.map(([key, value]) => (
               <div key={key} className="p-2 bg-white rounded-lg shadow-lg">
@@ -192,7 +212,7 @@ const Score = () => {
               </div>
             ))}
           </div>
-          {history?.entries?.length < history?.total && (
+          {history?.datas?.length < history?.total && (
             <a
               className="flex items-center justify-center py-3"
               href="#"

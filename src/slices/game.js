@@ -28,14 +28,11 @@ export const getGameStatus = createAsyncThunk(
 
 export const getHistory = createAsyncThunk(
   "game/getHistory",
-  async (data, thunkAPI) => {
+  async (limit, thunkAPI) => {
     try {
-      const account = thunkAPI.getState()?.auth?.currentUser?.account?._id;
-      // console.log(
-      //   "===========",
-      //   thunkAPI.getState()?.auth?.currentUser?.account?._id
-      // );
-      const response = await gameService.getHistory({ account, number: data });
+      const player = thunkAPI.getState()?.auth?.currentUser?._id;
+
+      const response = await gameService.getHistory({ player, limit });
       return thunkAPI.dispatch(replaceHistory(response));
     } catch (error) {
       throw error;

@@ -10,6 +10,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import TextInput from "../components/TextInput";
 import ModalAlert from "./modals/ModalAlert";
 import moment from "moment/moment";
+import Loading from "../components/Loading";
+import { showError } from "../components/Toasts";
 
 function Signin() {
   const validationSchema = Yup.object().shape({
@@ -21,6 +23,7 @@ function Signin() {
   const [showIsexist, setShowIsExist] = useState(false);
   const [message, setMessage] = useState("");
   const [me, setMe] = useState();
+  const [load, setLoad] = useState(false);
 
   const {
     register,
@@ -43,9 +46,11 @@ function Signin() {
   };
 
   const onFormSubmit = (data) => {
+    setLoad(true);
     dispatch(login(data))
       .unwrap()
       .then((data) => {
+        setLoad(false);
         console.log(data.is_exist);
         if (data.is_exist) {
           setMe(data.data);
@@ -60,16 +65,24 @@ function Signin() {
           navigate("/home");
         }
       })
-      .catch(() => {});
+      .catch((err) => {
+        setLoad(false);
+        showError("Une erreur c'est produit");
+      });
   };
 
   const start_visitor = () => {
+    setLoad(true);
     dispatch(visitor())
       .unwrap()
       .then(() => {
+        setLoad(false);
         navigate("/home");
       })
-      .catch(() => {});
+      .catch((err) => {
+        setLoad(false);
+        showError("Une erreur c'est produit");
+      });
   };
 
   const onErrors = (errors) => console.error(errors);
@@ -80,6 +93,7 @@ function Signin() {
 
   return (
     <main className="bg-white">
+      <Loading load={load} />
       <ModalAlert
         open={showIsexist}
         setOpen={setShowIsExist}

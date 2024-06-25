@@ -140,12 +140,18 @@ function Game() {
     setGame(data);
 
     socket?.on(`session:play:${game?._id}`, (data) => {
+      setTimeout(() => {
+        setIsLaunch(false);
+      }, 400);
+
       console.log(data);
       setGame(data);
       time = gameTimer;
 
       if (data?.status == "end") {
-        setModalFinish(true);
+        setTimeout(() => {
+          setModalFinish(true);
+        }, 1000);
         clearInterval(minuterId);
         minuterId = null;
       } else {
@@ -172,7 +178,9 @@ function Game() {
           setGame(myGame);
 
           if (myGame?.status == "end") {
-            setModalFinish(true);
+            setTimeout(() => {
+              setModalFinish(true);
+            }, 1000);
             clearInterval(minuterId);
             minuterId = null;
           } else {
@@ -186,10 +194,15 @@ function Game() {
         });
     });
 
+    socket?.on(`dice:launch:${game._id}`, () => {
+      setIsLaunch(true);
+    });
+
     return () => {
       socket?.off(`session:play:${game?._id}`);
       socket?.off(`session:abandon:${game?._id}}`);
       socket?.off(`dice:roll:${game?._id}}`);
+      socket?.emit(`dice:launch`, { _id: game._id });
     };
   }, []);
 
@@ -213,13 +226,17 @@ function Game() {
 
   const launch = () => {
     if (game?.status != "end") {
-      setIsLaunch(true);
+      // setIsLaunch(true);
+      socket?.emit(`dice:launch`, { _id: game._id });
       gameService
         .launch({ id: game._id, data: { player: currentUser._id } })
         .then((res) => {
           setTimeout(() => {
-            setIsLaunch(false);
+            // setIsLaunch(false);
           }, 500);
+        })
+        .catch((err) => {
+          setIsLaunch(false);
         });
     } else {
       showError("La partie est terminée");

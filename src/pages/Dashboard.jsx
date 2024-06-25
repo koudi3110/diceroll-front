@@ -36,7 +36,7 @@ function Dashboard() {
 
   const { waiting, encours } = useSelector((state) => state.game);
 
-  if (!currentUser) {
+  if (!localStorage.getItem("user")) {
     return <Navigate to="/signin" />;
   }
 

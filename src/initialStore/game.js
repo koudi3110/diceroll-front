@@ -2,6 +2,6 @@ export default {
   waiting: [],
   encours: [],
   gameData: {},
-  history: { entries: [], total: 0 },
+  history: [{ datas: [], total: 0 }],
   score: [],
 };

@@ -8,23 +8,18 @@ import {
   replaceSocket,
 } from "./slices/auth";
 import { replaceEncours, replaceWainting } from "./slices/game";
+import { baseURL } from "./utils/baseUrl";
 
 const Init = ({ children }) => {
   const { currentUser, isLoggedIn, socket, language } = useSelector(
     (state) => state.auth
   );
 
-  const [finance, setFinance] = useState(null);
-  const [modalFinish, setModalFinish] = useState(false);
-  const [modalPayment, setModalPayment] = useState(false);
-  const [position, setPosition] = useState("/");
-  const [transation, setTransaction] = useState("");
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const socket1 = io("http://localhost:4000", {
+  const socket1 = io(baseURL, {
     // reconnectionDelayMax: 10000,
     reconnectionDelay: 1000,
     reconnectionAttempts: 10,

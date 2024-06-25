@@ -71,17 +71,8 @@ const initGame = async (id) => {
   }
 };
 
-const getScores = async () => {
-  return api.get(`scores/get-latest-scores`).then((response) => {
-    return response.data;
-  });
-};
-
-const getHistory = ({ account, number }) => {
-  const start = performance.now();
-  return api.get(`finances/history/${account}/${number}`).then((response) => {
-    const end = performance.now();
-    // console.log(`getHistory`, start - end);
+const getHistory = ({ player, limit }) => {
+  return api.get(`dice/history/${player}/${limit}`).then((response) => {
     return response.data;
   });
 };
@@ -105,7 +96,6 @@ export default {
   initGame,
   createGame,
   getHistory,
-  getScores,
   sessionStatus,
   launch,
 };
