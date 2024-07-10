@@ -4,7 +4,12 @@ import AuthImage from "/images/background.jpg";
 import Logo from "/images/logo.png";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
-import { login, replaceCurrentUser, visitor } from "../slices/auth";
+import {
+  login,
+  replaceCurrentUser,
+  replaceIsLoggedIn,
+  visitor,
+} from "../slices/auth";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import TextInput from "../components/TextInput";
@@ -41,6 +46,7 @@ function Signin() {
 
   const itsMe = () => {
     dispatch(replaceCurrentUser(me));
+    dispatch(replaceIsLoggedIn(true));
     localStorage.setItem("user", JSON.stringify(me));
     navigate("/home");
   };
@@ -61,6 +67,7 @@ function Signin() {
           setMessage(msg);
         } else {
           dispatch(replaceCurrentUser(data.data));
+          dispatch(replaceIsLoggedIn(true));
           localStorage.setItem("user", JSON.stringify(data.data));
           navigate("/home");
         }

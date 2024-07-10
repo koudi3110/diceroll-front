@@ -7,18 +7,14 @@ const TextInput = ({
   onChange = null,
   secure = false,
   value = null,
-  type,
-  name = "type",
   readOnly = false,
   id = "tooltip",
   inputType = "text",
   showLabelRadio = false,
-  autoComplete,
   className = "form-input w-full focus:border-green-400 box-border focus:font-semibold overflow-visible focus:border-l-3",
   hgt = 4,
   textarea = false,
   label = "Votre label",
-  showLabel = false,
   tooltip = false,
   suffix = null,
   prefix = null,
@@ -26,8 +22,6 @@ const TextInput = ({
   search = false,
   onSearchClick = null,
   inputRef,
-  min,
-  max,
 }) => {
   const [isVisible, setIsVisible] = useState(secure);
   const [shwLabel, setShwLabel] = useState(false);
@@ -48,7 +42,7 @@ const TextInput = ({
     >
       <div className="flex items-center justify-between">
         {shwLabel && (
-          <label className="absolute bg-white px-1 z-20 ml-4 text-slate-400 text-xs font-medium">
+          <label className="absolute bg-white px-1 z-10 ml-4 text-slate-400 text-xs font-medium">
             {placeholder}
           </label>
         )}

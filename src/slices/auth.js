@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { setMessage } from "./message";
 import AuthService from "../services/auth.service";
 import initialState from "../initialStore/auth";
+import { replaceConfigs } from "./config";
 
 const user = JSON.parse(localStorage.getItem("user"));
 
@@ -74,6 +75,8 @@ export const logout = createAsyncThunk(
     try {
       const responser = AuthService.logout();
       thunkAPI.dispatch(replaceIsLoggedIn(false));
+      thunkAPI.dispatch(replaceCurrentUser(null));
+      thunkAPI.dispatch(replaceConfigs({}));
       return responser;
     } catch (error) {
       const message =
@@ -92,26 +95,6 @@ export const logout = createAsyncThunk(
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  // extraReducers: {
-  //   [register.fulfilled]: (state, action) => {
-  //     state.isLoggedIn = false;
-  //   },
-  //   [register.rejected]: (state, action) => {
-  //     state.isLoggedIn = false;
-  //   },
-  //   [login.fulfilled]: (state, action) => {
-  //     state.isLoggedIn = true;
-  //     state.user = action.payload.user;
-  //   },
-  //   [login.rejected]: (state, action) => {
-  //     state.isLoggedIn = false;
-  //     state.user = null;
-  //   },
-  //   [logout.fulfilled]: (state, action) => {
-  //     state.isLoggedIn = false;
-  //     state.user = null;
-  //   },
-  // },
 
   reducers: {
     replaceCurrentUser(state, action) {

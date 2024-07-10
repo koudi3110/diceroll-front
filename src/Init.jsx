@@ -9,6 +9,7 @@ import {
 } from "./slices/auth";
 import { replaceEncours, replaceWainting } from "./slices/game";
 import { baseURL } from "./utils/baseUrl";
+import { getConfigs } from "./slices/config";
 
 const Init = ({ children }) => {
   const { currentUser, isLoggedIn, socket, language } = useSelector(
@@ -44,6 +45,12 @@ const Init = ({ children }) => {
       }
     }
   }, [isLoggedIn]);
+
+  useEffect(() => {
+    if (currentUser?._id) {
+      dispatch(getConfigs(currentUser?._id));
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     if (socket) {

@@ -11,6 +11,7 @@ import Dashboard from "./pages/Dashboard";
 import Signin from "./pages/Signin";
 import Game from "./pages/Game";
 import Score from "./pages/Score";
+import Configuration from "./pages/Configuration";
 
 function App() {
   const location = useLocation();
@@ -28,6 +29,7 @@ function App() {
         <Route path="/signin" element={<Signin />} />
         <Route exact path="/game" element={<Game />} />
         <Route path="/scores" element={<Score />} />
+        <Route path="/settings" element={<Configuration />} />
 
         <Route path="*" element={<Dashboard />} />
       </Routes>

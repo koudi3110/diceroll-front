@@ -44,8 +44,7 @@ const ModalNewGame = ({ open, setOpen, setGame, setJoinOpen }) => {
 
   const [isOpen, setIsOpen] = useState(true);
   const [load, setLoad] = useState(false);
-  const [initParam, setInitParam] = useState();
-  const { gameData } = useSelector((state) => state.game);
+  const { configs } = useSelector((state) => state.config);
 
   const nbPlayers = [
     { id: 1, name: "1 joueur", value: 1 },
@@ -58,30 +57,17 @@ const ModalNewGame = ({ open, setOpen, setGame, setJoinOpen }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const init = JSON.parse(localStorage.getItem("@game:init"));
-    setInitParam(init);
+    if (configs) {
+      setValue("timer", configs?.timer);
+      setValue("nb_parties", configs?.nb_partie);
+      setValue("nb_dices", configs?.nb_dices);
 
-    console.log(init);
-
-    if (init) {
-      setValue("time", init.timer);
-      setValue("mise", init.bet || 0);
-      if (init.numberPlayersMax) {
-        const find = nbPlayers.find((e) => e.value == init.numberPlayersMax);
-        setValue("nbPlayers", find);
+      if (configs?.nb_players) {
+        const find = nbPlayers.find((e) => e.value == configs.nb_players);
+        setValue("nb_players", find);
       }
-
-      if (init.acceptStoppedBall) {
-        setValue("stoppedBall", init.acceptStoppedBall);
-        setStoppedBall(init.acceptStoppedBall);
-      }
-    } else {
-      // setValue("mise", 0);
-      // setValue("time", 30);
-      // setValue("nbPlayers", nbPlayers[0]);
-      // setValue("isPrivate", false);
     }
-  }, []);
+  }, [configs]);
 
   const newGame = (data) => {
     const params = {
